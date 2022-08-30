@@ -9,21 +9,23 @@ char *my_strcat(char *dest, const char *src);
 int my_strcmp(const char *lhs, const char *rhs);
 int my_strncmp(const char *lhs, const char *rhs, size_t count);
 char *my_strchr(const char *str, int ch);
+char *my_strrchr(const char *str, int ch);
+size_t my_strspn(const char *dest, const char *src);
 
 int main()
 {
-        char arr1[] = "afaQWERTYasdas";
-        char arr2[] = "QWERTY";
+        char arr1[30] = "ab7dc312$#@abc";
+        char arr2[] = "aqwertyuiopasdfghjklzxcvbnm";
         char arr3[] = "1234";
 
         char *str1 = arr1;
         char *str2 = arr2;
         char *str3 = arr3;
 
-
-        printf("%s \n", strchr(str1, 'Q'));
-        str1 = my_strchr(str1, 'Q');
-        printf("%s \n", str1); //not working
+        printf("%d\n", my_strspn(str1, str2));
+        printf("%d\n", strspn(str1, str2));
+        //printf("%s \n", strrchr(str2, 'Q'));
+        //printf("%s \n", my_strrchr(str1, 'Q')); //not working
 
         return 0;
 }
@@ -153,9 +155,68 @@ char *my_strchr(const char *str, int ch)
         //printf("2 %s\n", str2); working
         //printf("3 %s\n", str); working
 
-        for (; *str2 != (char) ch; str2++);
+        for (; *str2 != (char) ch && *str2 != '\0'; str2++);
 
         //printf("4 %s\n", str2); working
+        if (*str2 == '\0' && (char) ch != '\0')
+                return NULL;
+        else
+                return str2;
+}
 
-        return str2;
+char *my_strrchr(const char *str, int ch)
+{
+        char arr[strlen(str)] = "a";
+        char *str1 = arr;
+        str1 = my_strcpy(str1, str);
+        int len = strlen(str);
+        str1--;
+        *str1 = '\0';
+        str1 += len + 1;
+        *str1 = '\0';
+        char *str2 = str1;
+        str2--;
+
+        for (; *str2 != (char) ch && *str2 != '\0'; str2--);
+
+        if (*str2 == '\0' && (char) ch != '\0')
+                return NULL;
+        else
+                return str2;
+}
+
+
+size_t my_strspn(const char *dest, const char *src)
+{
+        assert(dest);
+        assert(src);
+
+        char arr[my_strlen(src)] = "a";
+        char *str = arr;
+        str = my_strcpy(str, src);
+        for (int i = 0; i < my_strlen(src); i++)
+        {
+                for (int j = i; j < my_strlen(src); j++)
+                {
+                        if (*(str + i) > *(str + j))
+                        {
+                                char a = *(str + i);
+                                *(str + i) = *(str + j);
+                                *(str + j) = a;
+                        }
+                }
+        }
+        size_t i = 0;
+        for (; i < my_strlen(dest);)
+                for (int j = 0; j <= my_strlen(src); j++)
+                        if (*(dest + i) == *(src + j))
+                        {
+                                i++;
+                                break;
+                        } else if (j == my_strlen(src))
+                        {
+                                printf("wtf %d\n", j);
+                                return i;
+                        }
+        return i;
 }
