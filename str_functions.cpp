@@ -8,19 +8,22 @@ size_t my_strlen(const char *str);
 char *my_strcat(char *dest, const char *src);
 int my_strcmp(const char *lhs, const char *rhs);
 int my_strncmp(const char *lhs, const char *rhs, size_t count);
+char *my_strchr(const char *str, int ch);
 
 int main()
 {
-        char arr1[] = "afaQWERTY";
-        char arr2[] = "dadsQWERTY";
+        char arr1[] = "afaQWERTYasdas";
+        char arr2[] = "QWERTY";
         char arr3[] = "1234";
 
         char *str1 = arr1;
         char *str2 = arr2;
         char *str3 = arr3;
 
-        printf("%d \n", strncmp(str1, str2, 3));
-        printf("%d \n", my_strncmp(str1, str2, 3));
+
+        printf("%s \n", strchr(str1, 'Q'));
+        str1 = my_strchr(str1, 'Q');
+        printf("%s \n", str1); //not working
 
         return 0;
 }
@@ -135,4 +138,24 @@ int my_strncmp(const char *lhs, const char *rhs, size_t count)
         }
 
         return 0;
+}
+
+char *my_strchr(const char *str, int ch)
+{
+        char arr[strlen(str)] = "a";
+        char *str1 = arr;
+        str1 = my_strcpy(str1, str);
+        //printf("1 %s\n", str1); working
+        char *str2 = str1;
+        int len = strlen(str);
+        str1 += len;
+        *str1 = '\0';
+        //printf("2 %s\n", str2); working
+        //printf("3 %s\n", str); working
+
+        for (; *str2 != (char) ch; str2++);
+
+        //printf("4 %s\n", str2); working
+
+        return str2;
 }
