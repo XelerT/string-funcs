@@ -7,19 +7,20 @@ char *my_strncpy(char *dest, char const *src, size_t count);
 size_t my_strlen(const char *str);
 char *my_strcat(char *dest, const char *src);
 int my_strcmp(const char *lhs, const char *rhs);
+int my_strncmp(const char *lhs, const char *rhs, size_t count);
 
 int main()
 {
-        char arr1[] = "QWERTY";
-        char arr2[] = "QWERTY";
+        char arr1[] = "afaQWERTY";
+        char arr2[] = "dadsQWERTY";
         char arr3[] = "1234";
 
         char *str1 = arr1;
         char *str2 = arr2;
         char *str3 = arr3;
 
-        printf("%d \n", strcmp(str1, str2));
-        printf("%d \n", my_strcmp(str1, str2));
+        printf("%d \n", strncmp(str1, str2, 3));
+        printf("%d \n", my_strncmp(str1, str2, 3));
 
         return 0;
 }
@@ -110,6 +111,25 @@ int my_strcmp(const char *lhs, const char *rhs)
                 } else if ((*lhs - *rhs) > 0)
 
                         return 1;
+                else
+                        return -1;
+        }
+
+        return 0;
+}
+
+int my_strncmp(const char *lhs, const char *rhs, size_t count)
+{
+        const char *p = lhs;
+        for (size_t i = 0; i < count; i++)
+        {
+                if (*lhs == *rhs)
+                {
+                        lhs++;
+                        rhs++;
+                } else if ((*lhs - *rhs) > 0)
+
+                        return  1;
                 else
                         return -1;
         }
