@@ -22,7 +22,7 @@ size_t my_strcspn( const char *dest, const char *src );
 int main()
 {
         char arr1[30] = "6ab7dc312$#@abc";
-        char arr2[] = "dfghjklzxcvbnm";
+        char arr2[] = "dfghjklzxvnm";
         char arr3[] = "1234";
 
         char *str1 = arr1;
@@ -258,16 +258,12 @@ size_t my_strcspn( const char *dest, const char *src )
                 }
         }
         size_t i = 0;
-        printf("%s\n", str);
+        char a = 1;
+        for (; a; i++)
                 for (int j = 0; j <= my_strlen(src); j++)
-                        if (*(dest + i) != *(src + j))
+                        if (*(dest + i) == *(src + j))
                         {
-                                i++;
-                                break;
-                        } else if (j == my_strlen(src))
-                        {
-                                return i;
-                        } else {
+                                a = 0;
                                 return i;
                         }
         return i;
