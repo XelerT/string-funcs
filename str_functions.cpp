@@ -4,28 +4,33 @@
 
 char *my_strcpy(char *dest, char const *src);
 char *my_strncpy(char *dest, char const *src, size_t count);
+
 size_t my_strlen(const char *str);
+
 char *my_strcat(char *dest, const char *src);
+
 int my_strcmp(const char *lhs, const char *rhs);
 int my_strncmp(const char *lhs, const char *rhs, size_t count);
+
 char *my_strchr(const char *str, int ch);
 char *my_strrchr(const char *str, int ch);
+
 size_t my_strspn(const char *dest, const char *src);
+size_t my_strcspn( const char *dest, const char *src );
+
 
 int main()
 {
-        char arr1[30] = "ab7dc312$#@abc";
-        char arr2[] = "aqwertyuiopasdfghjklzxcvbnm";
+        char arr1[30] = "6ab7dc312$#@abc";
+        char arr2[] = "dfghjklzxcvbnm";
         char arr3[] = "1234";
 
         char *str1 = arr1;
         char *str2 = arr2;
         char *str3 = arr3;
 
-        printf("%d\n", my_strspn(str1, str2));
-        printf("%d\n", strspn(str1, str2));
-        //printf("%s \n", strrchr(str2, 'Q'));
-        //printf("%s \n", my_strrchr(str1, 'Q')); //not working
+        printf("%d\n", my_strcspn(str1, str2));
+        printf("%d\n", strcspn(str1, str2));
 
         return 0;
 }
@@ -106,6 +111,9 @@ char *my_strcat(char *dest, const char *src)
 
 int my_strcmp(const char *lhs, const char *rhs)
 {
+        assert(lhs);
+        assert(rhs);
+
         const char *p = lhs;
         for (int i = 0; i < my_strlen(p); i++)
         {
@@ -125,6 +133,9 @@ int my_strcmp(const char *lhs, const char *rhs)
 
 int my_strncmp(const char *lhs, const char *rhs, size_t count)
 {
+        assert(lhs);
+        assert(rhs);
+
         const char *p = lhs;
         for (size_t i = 0; i < count; i++)
         {
@@ -142,8 +153,11 @@ int my_strncmp(const char *lhs, const char *rhs, size_t count)
         return 0;
 }
 
-char *my_strchr(const char *str, int ch)
+char *my_strchr(const char *str, int ch) //after return print string doesn't work, print char does
 {
+        assert(str);
+
+
         char arr[strlen(str)] = "a";
         char *str1 = arr;
         str1 = my_strcpy(str1, str);
@@ -164,8 +178,10 @@ char *my_strchr(const char *str, int ch)
                 return str2;
 }
 
-char *my_strrchr(const char *str, int ch)
+char *my_strrchr(const char *str, int ch) //after return print string doesn't work, print char does
 {
+        assert(str);
+
         char arr[strlen(str)] = "a";
         char *str1 = arr;
         str1 = my_strcpy(str1, str);
@@ -216,6 +232,42 @@ size_t my_strspn(const char *dest, const char *src)
                         } else if (j == my_strlen(src))
                         {
                                 printf("wtf %d\n", j);
+                                return i;
+                        }
+        return i;
+}
+
+size_t my_strcspn( const char *dest, const char *src )
+{
+        assert(dest);
+        assert(src);
+
+        char arr[my_strlen(src)] = "a";
+        char *str = arr;
+        str = my_strcpy(str, src);
+        for (int i = 0; i < my_strlen(src); i++)
+        {
+                for (int j = i; j < my_strlen(src); j++)
+                {
+                        if (*(str + i) > *(str + j))
+                        {
+                                char a = *(str + i);
+                                *(str + i) = *(str + j);
+                                *(str + j) = a;
+                        }
+                }
+        }
+        size_t i = 0;
+        printf("%s\n", str);
+                for (int j = 0; j <= my_strlen(src); j++)
+                        if (*(dest + i) != *(src + j))
+                        {
+                                i++;
+                                break;
+                        } else if (j == my_strlen(src))
+                        {
+                                return i;
+                        } else {
                                 return i;
                         }
         return i;
