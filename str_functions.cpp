@@ -1,39 +1,40 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
-char *my_strcpy(char *dest, char const *src);
+char *my_strcpy (char *dest, char const *src);
 char *my_strncpy(char *dest, char const *src, size_t count);
 
 size_t my_strlen(const char *str);
 
 char *my_strcat(char *dest, const char *src);
 
-int my_strcmp(const char *lhs, const char *rhs);
+int my_strcmp (const char *lhs, const char *rhs);
 int my_strncmp(const char *lhs, const char *rhs, size_t count);
 
-char *my_strchr(const char *str, int ch);
+char *my_strchr (const char *str, int ch);
 char *my_strrchr(const char *str, int ch);
 
-size_t my_strspn(const char *dest, const char *src);
-size_t my_strcspn( const char *dest, const char *src );
+size_t my_strspn (const char *dest, const char *src);
+size_t my_strcspn(const char *dest, const char *src);
 
-char *my_strpbrk(const char* dest, const char* breakset); //WTF
+char *my_strpbrk(const char* dest, const char* breakset);
 
 char *my_strstr(const char* str, const char* substr);
 
 int main()
 {
-        char arr1[30] = "6ab7dc312$#@abc";
-        char arr2[] = "dc312";
-        char arr3[] = "1234";
+        char arr1[30] = "6ab7dc312$#@";
+        char arr2[] =   "6ab7dc312$#@";
+        char arr3[] =   "6";
 
         char *str1 = arr1;
         char *str2 = arr2;
         char *str3 = arr3;
 
-        printf("%s\n", my_strstr(str1, str2));
-        printf("%s\n",    strstr(str1, str2));
+        printf("%s\n", my_strstr(str1, str3));
+        printf("%s\n",    strstr(str1, str3));
 
         return 0;
 }
@@ -81,7 +82,8 @@ size_t my_strlen(const char *str)
         assert(str);
 
         size_t i = 0;
-        for(; *str++ != '\0'; i++);
+        while (*str++)
+                i++;
 
         return i;
 }
@@ -91,25 +93,14 @@ char *my_strcat(char *dest, const char *src)
         assert(dest);
         assert(src);
 
-        char *p = dest;
-        int free_length = my_strlen(dest);
-        for (; *dest != '\0'; free_length++)
-                dest++;
+        char *wr = dest;
+        while (*wr)
+                wr++;
 
-        free_length = sizeof(dest) / sizeof(dest[0]);
-        printf("%d\n", free_length);
-        if (my_strlen(src) > free_length) // TODO
-                return NULL;
+        while (*src)
+              *wr++ = *src++;
 
-        dest = dest + my_strlen(dest);
-        printf("%s %d\n", src, my_strlen(src));
-        int src_len = my_strlen(src);
-        for(int i = 0; i < src_len + 1; i++)
-        {
-                *dest++ = *src++;
-        }
-
-        return p;
+        return dest;
 }
 
 int my_strcmp(const char *lhs, const char *rhs)
@@ -117,19 +108,9 @@ int my_strcmp(const char *lhs, const char *rhs)
         assert(lhs);
         assert(rhs);
 
-        const char *p = lhs;
-        for (int i = 0; i < my_strlen(p); i++)
-        {
-                if (*lhs == *rhs)
-                {
-                        lhs++;
-                        rhs++;
-                } else if ((*lhs - *rhs) > 0)
-
-                        return 1;
-                else
-                        return -1;
-        }
+        while (*(lhs - 1))
+                if (*lhs++ != *rhs++)
+                        return  (*--lhs - *--rhs) / fabs(*lhs - *rhs);
 
         return 0;
 }
@@ -139,182 +120,92 @@ int my_strncmp(const char *lhs, const char *rhs, size_t count)
         assert(lhs);
         assert(rhs);
 
-        const char *p = lhs;
-        for (size_t i = 0; i < count; i++)
-        {
-                if (*lhs == *rhs)
-                {
-                        lhs++;
-                        rhs++;
-                } else if ((*lhs - *rhs) > 0)
-
-                        return  1;
-                else
-                        return -1;
-        }
+        while (*(lhs - 1) && count--)
+                if (*lhs++ != *rhs++)
+                        return  (*--lhs - *--rhs) / fabs(*lhs - *rhs);
 
         return 0;
 }
 
-char *my_strchr(const char *str, int ch) //after return print string doesn't work, print char does
+char *my_strchr(const char *str, int ch)
 {
         assert(str);
 
+        while (*str != ch)
+                if (*str++ == '\0')
+                        return nullptr;
 
-        char arr[strlen(str)] = {'\0'};
-        char *str1 = arr;
-        str1 = my_strcpy(str1, str);
-        //printf("1 %s\n", str1); working
-        char *str2 = str1;
-        int len = strlen(str);
-        str1 += len;
-        *str1 = '\0';
-        //printf("2 %s\n", str2); working
-        //printf("3 %s\n", str); working
-
-        for (; *str2 != (char) ch && *str2 != '\0'; str2++);
-
-        //printf("4 %s\n", str2); working
-        if (*str2 == '\0' && (char) ch != '\0')
-                return NULL;
-        else
-                return str2;
+        return (char*) str;
 }
-
-char *my_strrchr(const char *str, int ch) //after return print string doesn't work, print char does
-{
-        assert(str);
-
-        char arr[strlen(str)] = {'\0'};
-        char *str1 = arr;
-        str1 = my_strcpy(str1, str);
-        int len = strlen(str);
-        str1--;
-        *str1 = '\0';
-        str1 += len + 1;
-        *str1 = '\0';
-        char *str2 = str1;
-        str2--;
-
-        for (; *str2 != (char) ch && *str2 != '\0'; str2--);
-
-        if (*str2 == '\0' && (char) ch != '\0')
-                return NULL;
-        else
-                return str2;
-}
-
 
 size_t my_strspn(const char *dest, const char *src)
 {
         assert(dest);
         assert(src);
 
-        char arr[my_strlen(src)] = {'\0'};
-        char *str = arr;
-        str = my_strcpy(str, src);
-        for (int i = 0; i < my_strlen(src); i++)
-        {
-                for (int j = i; j < my_strlen(src); j++)
-                {
-                        if (*(str + i) > *(str + j))
-                        {
-                                char a = *(str + i);
-                                *(str + i) = *(str + j);
-                                *(str + j) = a;
-                        }
-                }
-        }
         size_t i = 0;
-        for (; i < my_strlen(dest);)
-                for (int j = 0; j <= my_strlen(src); j++)
+        while (*(dest + i))
+                for (int j = 0; *(src + j); j++)
                         if (*(dest + i) == *(src + j))
                         {
                                 i++;
                                 break;
-                        } else if (j == my_strlen(src))
+                        } else if (!*(src + j + 1))
                         {
-                                printf("wtf %d\n", j);
                                 return i;
                         }
         return i;
 }
 
-size_t my_strcspn( const char *dest, const char *src )
+size_t my_strcspn (const char *dest, const char *src)
 {
         assert(dest);
         assert(src);
 
-        char arr[my_strlen(src)] = {'\0'};
-        char *str = arr;
-        str = my_strcpy(str, src);
-        for (int i = 0; i < my_strlen(src); i++)
-        {
-                for (int j = i; j < my_strlen(src); j++)
-                {
-                        if (*(str + i) > *(str + j))
-                        {
-                                char a = *(str + i);
-                                *(str + i) = *(str + j);
-                                *(str + j) = a;
-                        }
-                }
-        }
         size_t i = 0;
-        char a = 1;
-        for (; a; i++)
-                for (int j = 0; j <= my_strlen(src); j++)
+        while (*(dest + i))
+        {
+                for (int j = 0; *(src + j); j++)
                         if (*(dest + i) == *(src + j))
-                        {
-                                a = 0;
                                 return i;
-                        }
+                i++;
+        }
+
         return i;
 }
 
 char* my_strpbrk(const char* dest, const char* breakset) //WTF
 {
-        char arr[my_strlen(dest)] = {'\0'};
-        char *p = arr;
-        p = strcpy(p, dest);
-
-        for (int i = 0; i < strlen(dest); i++)
+        size_t i = 0;
+        while (*(dest + i))
         {
-                printf("QWERTY %d %s\n", i, p);
-                if (*p == *breakset)
-                {
-                        return p;
-                }
-                p++;
+                for (int j = 0; *(breakset + j); j++)
+                        if (*(dest + i) == *(breakset + j))
+                                return (char*) (dest + i);
+                i++;
         }
 
-        return NULL;
+        return (char*) (dest + i);
 }
 
 char *my_strstr(const char* str, const char* substr)
 {
-        char arr[my_strlen(str)] = {'\0'};
-        char *p = arr;
-        p = strcpy(p, str);
         int a = 1;
-
-        for (int i = 0; i < strlen(str); i++)
+        for (int i = 0; *substr; i++)
         {
                 a = 1;
-                for (int j = 0; j < strlen(substr) && a; j++)
+                for (int j = 0; *substr && a; j++)
                 {
-                        if (*p != substr[j])
+                        if (*str != substr[j])
                                 a = 0;
-                        p++;
-                        if (j == (strlen(substr) - 1))
+                        str++;
+                        if (substr[j] == '\0')
                         {
-                                p -= (j + 1);
-                                printf("%s\n", p);
-                                return p;
+                                str -= (j + 1);
+                                return (char*) str;
                         }
                 }
         }
 
-        return p;
+        return (char*) str;
 }
-
